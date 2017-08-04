@@ -1,4 +1,3 @@
-
 import json
 import numpy as np
 from keras.utils.data_utils import get_file
@@ -7,7 +6,8 @@ from keras.models import Sequential
 from keras.layers.convolutional import Convolution2D, ZeroPadding2D
 from keras.layers.pooling import MaxPooling2D
 from keras.layers.core import Dense, Dropout, Flatten, Lambda
-from keras.optimizers import Adam #, SGD, RMSprop
+from keras.optimizers import Adam , SGD, RMSprop
+# from keras.callbacks import CSVLogger
 
 vgg_mean = np.array([123.68, 116.779, 103.939], dtype=np.float32).reshape((3,1,1))
 def RGB_to_BGR(x):
@@ -96,9 +96,9 @@ class Vgg16Stijn():
             See Keras documentation: https://keras.io/models/model/
         """
         self.model.compile(optimizer=Adam(lr=lr),
-                loss='categorical_crossentropy', metrics=['accuracy'])
+                loss='binary_crossentropy', metrics=['accuracy'])
     
-    def finetune_to_classes(self, batches):
+    def correct_class_id(self, batches):
         """
             Adjusts final layer to correct number of output nodes and updates class labels.
             
@@ -114,16 +114,19 @@ class Vgg16Stijn():
         # orders class keys by value in dict like ['non_invasive', 'invasive'] because key 'non_invasive' has value 0
         self.classes = classes
         
-    def fit(self, batches, val_batches, nb_epoch=1):
+    def fit(self, batches, val_batches, results_path, nb_epoch=1, extra_info=''):
         """
-            Fits the model on data yielded batch-by-batch by a Python generator.
+            Fits the model on data yielded batch-by-batch by a Python generator. 
+            Saves metrics to extra_info+'training.log'.
             See Keras documentation: https://keras.io/models/model/
         """
+#         csv_logger = CSVLogger(extra_info+'training.log', append=True) dit moet in de fit_generator, callbacks=[csv_logger]
+#         weight_save_callback = ModelCheckpoint('/path/to/weights.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_loss', verbose=0,save_best_only=False, mode='auto')
+#         model.fit(X_train,y_train,batch_size=batch_size,nb_epoch=nb_epoch,callbacks=[weight_save_callback])
         self.model.fit_generator(batches, samples_per_epoch=batches.nb_sample, nb_epoch=nb_epoch,
                 validation_data=val_batches, nb_val_samples=val_batches.nb_sample)
-        print('fit done')
     
-    def fit_n_save(self, batches, val_batches, nb_epoch, results_path, extra_info=''):
+    def fit_n_save_all(self, batches, val_batches, nb_epoch, results_path, extra_info=''):
         """
             Uses fit and saves weights every epoch
             
@@ -131,14 +134,13 @@ class Vgg16Stijn():
                 batches, val_batches, nb_epoch
                 extra_info: string attached to filename
         """
-        extra_info = str(extra_info)
-        latest_weights_filename = None
+        latest_weights_filename = ''
         for epoch in range(nb_epoch):
             print('Epoch %d' %epoch)
             self.fit(batches, val_batches, nb_epoch=1)
             latest_weights_filename = 'ft%d%s.h5' %(epoch+1, extra_info)
             self.model.save_weights(results_path+latest_weights_filename)
-        print "Completed %s fit operations" % nb_epoch
+        print("Completed fit operations and saved in " + str(latest_weights_filename))
     
     def test(self, path, batch_size=8):
         """

@@ -1,2 +1,12 @@
 /data
 .kaggle-cli
+.ipynb_checkpoints/1_image_recognition_invasivespecies-checkpoint.ipynb
+.ipynb_checkpoints/2_CNNs-checkpoint.ipynb
+.ipynb_checkpoints/Lesson_3-checkpoint.ipynb
+.ipynb_checkpoints/edit_util_files-checkpoint.ipynb
+testtest.csv
+utils_anders.pyc
+vgg16stijn.pyc
+.ipynb_checkpoints/1_image_recognition_catsanddogs-checkpoint.ipynb
+utils.pyc
+vgg16.pyc
