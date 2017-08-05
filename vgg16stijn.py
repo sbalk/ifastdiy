@@ -6,7 +6,7 @@ from keras.models import Sequential
 from keras.layers.convolutional import Convolution2D, ZeroPadding2D
 from keras.layers.pooling import MaxPooling2D
 from keras.layers.core import Dense, Dropout, Flatten, Lambda
-from keras.optimizers import Adam , SGD, RMSprop
+from keras.optimizers import Adam, SGD, RMSprop
 # from keras.callbacks import CSVLogger
 
 vgg_mean = np.array([123.68, 116.779, 103.939], dtype=np.float32).reshape((3,1,1))
@@ -114,17 +114,17 @@ class Vgg16Stijn():
         # orders class keys by value in dict like ['non_invasive', 'invasive'] because key 'non_invasive' has value 0
         self.classes = classes
         
-    def fit(self, batches, val_batches, results_path, nb_epoch=1, extra_info=''):
+    def fit(self, batches, val_batches, nb_epoch=1, extra_info=''):
         """
             Fits the model on data yielded batch-by-batch by a Python generator. 
             Saves metrics to extra_info+'training.log'.
             See Keras documentation: https://keras.io/models/model/
         """
-#         csv_logger = CSVLogger(extra_info+'training.log', append=True) dit moet in de fit_generator, callbacks=[csv_logger]
+#         csv_logger = CSVLogger(extra_info+'training.log', append=True)
 #         weight_save_callback = ModelCheckpoint('/path/to/weights.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_loss', verbose=0,save_best_only=False, mode='auto')
 #         model.fit(X_train,y_train,batch_size=batch_size,nb_epoch=nb_epoch,callbacks=[weight_save_callback])
         self.model.fit_generator(batches, samples_per_epoch=batches.nb_sample, nb_epoch=nb_epoch,
-                validation_data=val_batches, nb_val_samples=val_batches.nb_sample)
+                validation_data=val_batches, nb_val_samples=val_batches.nb_sample) #, callbacks=[csv_logger])
     
     def fit_n_save_all(self, batches, val_batches, nb_epoch, results_path, extra_info=''):
         """
