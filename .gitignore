@@ -10,3 +10,4 @@ vgg16stijn.pyc
 .ipynb_checkpoints/1_image_recognition_catsanddogs-checkpoint.ipynb
 utils.pyc
 vgg16.pyc
+vgg16bn.pyc
