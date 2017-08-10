@@ -7,6 +7,7 @@ from keras.layers.convolutional import Convolution2D, ZeroPadding2D
 from keras.layers.pooling import MaxPooling2D
 from keras.layers.core import Dense, Dropout, Flatten, Lambda
 from keras.optimizers import Adam, SGD, RMSprop
+from keras.utils.np_utils import to_categorical
 # from keras.callbacks import CSVLogger
 
 vgg_mean = np.array([123.68, 116.779, 103.939], dtype=np.float32).reshape((3,1,1))
@@ -95,6 +96,7 @@ class Vgg16Stijn():
             Configures the model for training.
             See Keras documentation: https://keras.io/models/model/
         """
+        print('compiling lr = '+ str(lr))
         self.model.compile(optimizer=Adam(lr=lr),
                 loss='binary_crossentropy', metrics=['accuracy'])
     
