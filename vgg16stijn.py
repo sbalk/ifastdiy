@@ -91,7 +91,7 @@ class Vgg16Stijn():
         model.add(Dense(num,activation='softmax'))
         self.compile()
         
-    def compile(self, lr=0.001):
+    def compile(self, lr=0.00001):
         """
             Configures the model for training.
             See Keras documentation: https://keras.io/models/model/
