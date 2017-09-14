@@ -11,3 +11,4 @@ vgg16stijn.pyc
 utils.pyc
 vgg16.pyc
 vgg16bn.pyc
+training.log
